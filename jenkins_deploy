@@ -1,0 +1,31 @@
+pipeline{
+    agent any
+    
+       
+    stages{
+        
+        stage('Git Clone'){
+            
+            steps{
+               git branch: 'main', url: 'https://github.com/swatigali/java_project_2.git'
+            }
+        }
+        
+               
+        stage('Docker Build'){
+            steps{
+                sh 'docker build -t swatigali/javaproject_2 .'
+            }
+        }
+        
+        stage('Docker Push'){
+            steps{
+                withCredentials([string(credentialsId: 'docker-hub', variable: 'dockerpush')]) {
+                sh 'docker login -u swatigali -p ${dockerpush}'
+                }
+                 sh 'docker push swatigali/javaproject_2'
+            }
+           
+        }
+    }
+}
